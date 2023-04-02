@@ -1,0 +1,24 @@
+field,adobe_value,exiftool_value
+EXIF:FlashMode,unknown,unknown
+EXIF:FlashMode,compulsory flash firing,on
+EXIF:FlashMode,compulsory flash suppression,off
+EXIF:FlashMode,auto mode,auto,
+EXIF:FlashReturn,no strobe return detection,No return detection
+EXIF:FlashReturn,strobe return light not detected,Return not detected
+EXIF:FlashReturn,strobe return light detected,Return detected
+EXIF:MeteringMode,average,Average
+EXIF:MeteringMode,centerweightedaverage,Center-weighted average
+EXIF:MeteringMode,spot,Spot
+EXIF:MeteringMode,multispot,multi-spot
+EXIF:MeteringMode,pattern,multi-segment
+EXIF:MeteringMode,partial,partial
+EXIF:MeteringMode,other,other
+EXIF:ExposureProgram,not defined,Not Defined
+EXIF:ExposureProgram,manual,Manual
+EXIF:ExposureProgram,normal program,Program AE
+EXIF:ExposureProgram,aperture priority,Aperture-priority AE
+EXIF:ExposureProgram,shutter priority,Shutter speed priority AE
+EXIF:ExposureProgram,creative program,Creative (Slow speed)
+EXIF:ExposureProgram,action program,Action (High speed)
+EXIF:ExposureProgram,portrait mode,Portrait
+EXIF:ExposureProgram,landscape mode,Landscape

@@ -1,0 +1,43 @@
+name: 'Import Lightroom Album'
+description: 'Download images from a public Lightroom Album'
+author: 'Michael Strickland'
+inputs:
+  album_url:
+    required: true
+    description: 'URL of a public Lightroom album.'
+  default_copyright:
+    description: 'Default value to populate rights-related image metadata fields with.'
+  download_directory:
+    description: 'Destination for downloaded images. Can include `$album_name` as a variable.'
+  add_exif_metadata:
+    description: 'Apply available EXIF data to the images.'
+    default: 'true'
+  optimize_image_downloads:
+    description: 'Skip downloading image content if newsest version already exists on filesystem'
+    default: 'true'
+  rendition_type:
+    description: 'Which image rendition to download (2048, 1080, 640, thumbnail2x).'
+    default: '2048'
+  hide_stacked_assets:
+    description: 'Skip imags not at the front of a stack.'
+    default: 'true'
+  save_xmp:
+    description: 'Save XMP sidecar files alongside images.'
+    default: 'false'
+  save_json:
+    description: 'Save JSON metadata from adobe alongside images.'
+    default: 'false'
+outputs:
+  album_id:
+    description: 'The id of the album found at the provided URL'
+  album_name:
+    description: 'The name of the album found at the provided URL'
+  album_sort_order:
+    description: 'Sort order the shared album: captureDate, importTimestamp, fileName, rating, userUpdated + Asc or Desc. For example, captureDateAsc.'
+  sorted_image_ids:
+    description: 'Space-delimited list of image IDs'
+  sorted_image_paths:
+    description: 'Space-delimited list of image filepaths'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
