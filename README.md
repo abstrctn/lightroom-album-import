@@ -21,11 +21,16 @@ This action hits publicly-accessible API endpoints hosted by Adobe for shared al
 ## Usage
 
 ```yml
-  - name: Import Album
-    id: import-album
-    uses: abstrctn/lightroom-album-import
+jobs:
+  bootstrap_concert:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.title }} =~ "Action https://adobe.ly"
+    steps:
+    - name: Import Album
+      id: import-album
+      uses: abstrctn/lightroom-album-import
 
-  # Do something with the images, e.g. make a Pull Request
+      # Do something with the images, e.g. make a Pull Request
 ```
 
 ### Album requirements
