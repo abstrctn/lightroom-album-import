@@ -31,7 +31,11 @@ if [[ ! "$INPUT_RENDITION_TYPE" =~ ^(2048|1080|640|thumbnail2x)$ ]]; then
 fi
 
 album_html=$(mktemp)
-curl -A "$USER_AGENT" -s -L $album_url -o $album_html
+curl -s -A "$USER_AGENT" -s -L $album_url -o $album_html
+if [ $? -ne 0 ]; then
+  echo "::error Accessing $album_url failed."
+  exit 1
+fi
 
 # Extract album metadata from the window.SharesConfig variable
 line_start=$(grep -Fn 'window.SharesConfig =' $album_html | grep -Eo '^[0-9]+')
@@ -53,7 +57,12 @@ echo "::debug::album_name=$album_name"
 echo "::debug::album_id=$album_id"
 
 # Accepts parameters defined at https://developer.adobe.com/lightroom/lightroom-api-docs/api/#tag/Albums/operation/listAssetsOfAlbum
-json="$(curl -A "$USER_AGENT" -s "https://lightroom.adobe.com/v2/$url_prefix/assets?embed=asset%3Buser&limit=500&order_after=-&exclude=incomplete&subtype=image&hide_stacked_assets=$INPUT_HIDE_STACKED_ASSETS" | tail -1)"
+json_url="https://lightroom.adobe.com/v2/$url_prefix/assets?embed=asset%3Buser&limit=500&order_after=-&exclude=incomplete&subtype=image&hide_stacked_assets=$INPUT_HIDE_STACKED_ASSETS"
+json="$(curl -A "$USER_AGENT" -s "$json_url" | tail -1)"
+if [ $? -ne 0 ]; then
+  echo "::error Accessing $json_url failed."
+  exit 1
+fi
 
 # Construct a file containing the metadata about each image, base64-encoded,
 # one resource per row
@@ -225,7 +234,6 @@ while IFS=, read -r xmp; do
     download_image=true
   fi
   update_metadata=
-  echo "metadata $datetime_updated != $metadata_last_modified"
   if [[ -z "$metadata_last_modified" ]] || \
      [[ "$datetime_updated" != "$metadata_last_modified" ]]; then
     update_metadata=true
@@ -235,7 +243,7 @@ while IFS=, read -r xmp; do
     echo "::debug::$datetime_image_updated != $image_last_modified"
     image_url=https://lightroom.adobe.com/v2c/spaces/$share_id/$download_2048
     echo "::debug::Downloading $image_url to $image_path..."
-    curl -A "$USER_AGENT" $image_url -o "$image_path"
+    curl -A "$USER_AGENT" -s $image_url -o "$image_path"
     if [ $? -ne 0 ]; then
       echo "::error Downloading failed."
       exit 1
