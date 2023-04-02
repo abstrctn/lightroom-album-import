@@ -66,7 +66,7 @@ while IFS=$'\n' read -r act; do
   if [[ ! -z "$act" ]] && [[ ! "$act_name" =~ "$act" ]]; then
     support="$support"$'\n'"- $act"
   fi
-done < <(exiftool -j -Title $img_dir/*.xmp | jq -j '[.[] | .Title] | del(..|nulls) | unique | join("\n") + "\n"')
+done < <(exiftool -j -Title $img_dir/*.{jpg,xmp} | jq -j '[.[] | .Title] | del(..|nulls) | unique | join("\n") + "\n"')
 
 # Prepend the support array with a yaml field if supporting acts were found
 if [ ! -z "${support}" ]; then
@@ -74,7 +74,7 @@ if [ ! -z "${support}" ]; then
 fi
 
 # Get the first venue stored in the Location field, and convert it to a slug
-venue=$(exiftool -j -Location $img_dir/*.xmp | jq -j '[.[] | .Location] | del(..|nulls) | first')
+venue=$(exiftool -j -Location $img_dir/*.{jpg,xmp} | jq -j '[.[] | .Location] | del(..|nulls) | first')
 venue_slug=$(echo $venue | sed 's/ /-/g' | tr -d "'" | tr '[:upper:]' '[:lower:]' | sed 's/^the-//g')
 
 # Construct a date-slug
@@ -99,7 +99,7 @@ url_slug=${slug}-${venue_slug}-${date_slug}
 
 # Bootstrap concert file, preserving all frontmatter lines until `images` or
 # `featured_image` and the post body if they exist.
-live=_live/$album_name.md
+live=$album_name.md
 live_body=
 
 if [ -f $live ]; then

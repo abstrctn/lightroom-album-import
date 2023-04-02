@@ -20,15 +20,23 @@ This action hits publicly-accessible API endpoints hosted by Adobe for shared al
 
 ## Usage
 
+See the `examples` directory for options on integrating this into a workflow.
+
 ```yml
+# Run workflow when issues are opened that contain an adobe.ly link in the title
+on:
+  issues:
+    types: [opened, reopened]
 jobs:
   bootstrap_concert:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.title }} =~ "Action https://adobe.ly"
+    if: ${{ github.event.issue.title }} =~ "https://adobe.ly"
     steps:
     - name: Import Album
       id: import-album
-      uses: abstrctn/lightroom-album-import
+      uses: abstrctn/lightroom-album-import@v0.1.0
+      with:
+        album_url: "${{ github.event.issue.title }}"
 
       # Do something with the images, e.g. make a Pull Request
 ```
@@ -70,7 +78,7 @@ Variables that can be used by later workflow steps.
 ```yml
   - name: Import Album
     id: import-album
-    uses: abstrctn/lightroom-album-import
+    uses: abstrctn/lightroom-album-import@v0.1.0
   - name: Check outputs
     run: |
       echo "Album name: ${{ steps.import-album.outputs.album_name }}"
@@ -94,8 +102,7 @@ If you store images by saving them in external storage, or by using Git LFS, the
 
 These files will contain all of the populated exif tag values, and will be used to determine whether or not to download images.
 
-### Prevent updating image files stored in Git
-when only the metadata changes
+### Prevent updating image files stored in Git when only the metadata changes
 
 When storing images in Git or Git LFS, any change to the image binary will force a new copy of the image into your Git history, even if the only change is an Exif tag value. You may want to avoid this for storage or bandwidth reasons, especially if you're storing metadata values in a separate sidecar file.
 
@@ -104,9 +111,9 @@ This can be accomplished by stripping out select exif tags after this action run
 ```yml
   - name: Import Album
     id: import-album
-    uses: abstrctn/lightroom-album-import
+    uses: abstrctn/lightroom-album-import@v0.1.0
     with:
-      save_xmp: 'true'
+      save_xmp: true
 
   # Do something with the images
 
@@ -143,15 +150,15 @@ This isn't built into the step on the assumption that you may want to use the im
 
 By setting `save_json` to `true`, you can have access to the full set of Adobe-provided metadata for every image in the album. This can be useful when:
 * Requiring access to any JSON values not mapped to Exif tags within the action
-* Accessing rating, keyword or region data for an image that is applied from Adobe's AI tools
+* Accessing rating, keyword or region data for an image that Adobe annotates images with
 
 Similar to XMP sidecar files, Adobe's resource data is saved with the same filename as an image, but with the `.json` extension.
 
 ## Exif metadata
 
-Images downloaded from shared albums lack most of the metadata fields included when doing an image export from the Lightroom desktop or mobile apps (even when the shared album is configured to "Show metadata.") When viewing a shared album in a browser, metadata is made available as a JSON response which is then rendered alongside the images.
+Images downloaded from shared albums lack most of the metadata fields included when doing an image export from the Lightroom desktop or mobile apps (even when the shared album is configured to "Show metadata.") In a browser, metadata shown next to images comes from a set of JSON data describing the images, not embedded in the actual image files.
 
-This action reapplies that metadata into the image's Exif tags. To do so, the structure of the JSON needs to be mapped to the Exif metadata tag names and data types. This is done by:
+This action reapplies that metadata from the JSON into the image's Exif tags. To do so, the structure of the JSON needs to be mapped to the Exif metadata tag names and data types. This is done by:
 1. Extracting the available JSON values into bash variables
 2. Translating those values to the human readable equivalent values that `exiftool` expects as input
 3. Using the `exiftool` cli to assign those values to specific Exif tags
