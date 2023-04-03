@@ -9,7 +9,7 @@ This action can be used to automate exporting Lightroom images to another destin
 See also:
 - [Including Exif metadata within or alongside images](#exif-metadata)
 - [Optimizing image downloads on subsequent executions](#image-download-optimization)
-- [Create markdown file for an impored album](https://github.com/abstrctn/lightroom-album-import/blob/main/usage/generate-markdown.sh)
+- [Create markdown file for an impored album](https://github.com/abstrctn/lightroom-album-import/tree/main/examples/generate-album-markdown)
 
 ## Terms of use
 
