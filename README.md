@@ -34,7 +34,7 @@ jobs:
     steps:
     - name: Import Album
       id: import-album
-      uses: abstrctn/lightroom-album-import@v0.1.0
+      uses: abstrctn/lightroom-album-import@v0.1.1
       with:
         album_url: "${{ github.event.issue.title }}"
 
@@ -89,7 +89,7 @@ Variables that can be used by later workflow steps.
 ```yml
   - name: Import Album
     id: import-album
-    uses: abstrctn/lightroom-album-import@v0.1.0
+    uses: abstrctn/lightroom-album-import@v0.1.1
   - name: Check outputs
     run: |
       echo "Album name: ${{ steps.import-album.outputs.album_name }}"
@@ -122,7 +122,7 @@ This can be accomplished by stripping out select exif tags after this action run
 ```yml
   - name: Import Album
     id: import-album
-    uses: abstrctn/lightroom-album-import@v0.1.0
+    uses: abstrctn/lightroom-album-import@v0.1.1
     with:
       save_xmp: true
 

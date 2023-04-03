@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: import
-        uses: abstrctn/lightroom-album-import@v0.1.0
+        uses: abstrctn/lightroom-album-import@v0.1.1
         with:
           album_url: "${{ github.event.issue.title }}"
 
