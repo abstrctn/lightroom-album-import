@@ -41,6 +41,17 @@ jobs:
       # Do something with the images, e.g. make a Pull Request
 ```
 
+### Comitting files for use in a Pull Request
+
+You can chain this action with others that will commit the downloaded images and create a Pull Request for you to merge, as documented in the examples folder.
+
+Note that GitHub Actions are [required to run as root](https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user), meaning any files created will be owned by the root user. Later steps in a workflow, such as one to commit or create a PR, [may have difficulty](https://github.com/actions/runner/issues/434) with them. A workaround is to change the ownership of those files to the current user, which can be done within a script, or a step run after this action:
+
+```
+      # Update ownership of downloaded files to current user
+      - run: sudo chown -R $USER <download_directory>
+```
+
 ### Album requirements
 
 This action doesn't currently authenticate to your Adobe account. While a native Adobe integration would be a welcome improvement to this action, to keep things simple at the moment it relies on unauthenticated access to the public APIs used by javascript on the publicly shared album pages. To use this action, you must shared your album publicly. Adobe provides instructions for this [here](https://helpx.adobe.com/lightroom-cc/using/save-share-photos.html). You can disable public access after running this action if you wish.

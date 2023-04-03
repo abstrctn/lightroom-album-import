@@ -15,22 +15,19 @@ jobs:
         with:
           album_url: "${{ github.event.issue.title }}"
 
-      - name: add-and-commit
-        uses: EndBug/add-and-commit@v9
-        with:
-          new_branch: "album/${{ steps.import.outputs.album_name }}"
-          # The repo's Actions permissions > Workflow permissions must be set
-          # to "Read and write" with the ability for Actions to create PRs
-          # enabled.
-          default_author: github_actions
+      # Update ownership of downloaded files to current user
+      - run: sudo chown -R $USER *.jpg
 
-      - name: pull-request
-        uses: repo-sync/pull-request@v2
+      # The repo's Actions permissions > Workflow permissions must be set
+      # to "Read and write" with the ability for Actions to create PRs
+      # enabled.
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
         with:
-          source_branch: "album/${{ steps.import.outputs.album_name }}"
-          destination_branch: main
-          pr_title: "Import album ${{ steps.import.outputs.album_name }}"
-          pr_body: |
-            Added images from ${{ steps.import.outputs.album_name }} in Lightroom.
+          commit-message: "Update album data for ${{ steps.import.outputs.album_name }}"
+          branch: album/${{ steps.import.outputs.album_name }}
+          title: "Import ${{ steps.import.outputs.album_name }}"
+          body: |
+            Imported album data from ${{ steps.import.outputs.album_name }}.
 
             Closes #${{ github.event.issue.number }}.
