@@ -66,7 +66,7 @@ Only `album_url` is required.
 
 | Name | Description | Default |
 | --- | --- | --- |
-| `album_url` | The shareable link to an album (startinh with `adobe.ly`, or the unfurled `lightroom.adobe.com/shares/`) | (required) |
+| `album_url` | The shareable link to an album (starting with `adobe.ly`, or the unfurled `lightroom.adobe.com/shares/`) | (required) |
 | `default_copyright` | Default value to populate rights-related image metadata fields with, if the copyright field isn't set in Lightroom | `null` |
 | `download_directory` | Relative path of the destination for downlaoded images (the string `$album_name` will be replaced with the album's name) | `root` |
 | `rendition_type` | Which image rendition / size to download (2048, 1080, 640, thumbnail2x). Decrease from the default to save on space. The larger `2560` and `fullsize` aren't available when using the unauthenticated Lightroom API. | `2048` |
