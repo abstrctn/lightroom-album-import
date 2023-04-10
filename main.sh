@@ -98,8 +98,10 @@ while IFS=, read -r xmp; do
 
   # Use an uncommon codepoint 037 (unit separator) as delimiter to allow for empty values:
   # https://stackoverflow.com/questions/66480618/bash-how-to-read-tab-separated-line-with-empty-colums-from-file-into-array
-  IFS=$'\037' read -r id download_2048 datetime_image_updated datetime_updated filename sha aperture_value max_aperture_value shutter_speed_value f_number exposure_time focal_length brightness_value exposure_bias_value approximate_focus_distance iso focal_length_in_35 flash_red_eye_mode flash_fired flash_return flash_mode flash_function light_source metering_mode exposure_program user_comment make model lens serial_number location date_created city state country rights title description creatortool label xmprights_marked xmprights_usageterms xmprights_webstatement longitude latitude < <(echo $xmp | base64 -d | jq -j '[
+  echo $xmp | base64 -d | jq -j '[.asset.type, .asset.subtype] | join("\t")'
+  IFS=$'\037' read -r id asset_subtype download_2048 datetime_image_updated datetime_updated filename sha aperture_value max_aperture_value shutter_speed_value f_number exposure_time focal_length brightness_value exposure_bias_value approximate_focus_distance iso focal_length_in_35 flash_red_eye_mode flash_fired flash_return flash_mode flash_function light_source metering_mode exposure_program user_comment make model lens serial_number location date_created city state country rights title description creatortool label xmprights_marked xmprights_usageterms xmprights_webstatement longitude latitude < <(echo $xmp | base64 -d | jq -j '[
     .id,
+    .asset.subtype,
     .asset.links["/rels/rendition_type/2048"].href,
     .asset.payload.develop.userUpdated // .asset.payload.userUpdated,
     .asset.payload.userUpdated,
@@ -145,6 +147,10 @@ while IFS=, read -r xmp; do
     .asset.payload.location.longitude,
     .asset.payload.location.latitude
   ] | join("\t")' | tr '\t' '\037')
+
+  # asset subtypes of "stack" are returned, despite the filter of subtype=image,
+  # skip any stack assets.
+  if [ "$asset_subtype" != "image" ]; then continue; fi
 
   orig_name=$(echo $filename | sed 's/\..*//g')
 
